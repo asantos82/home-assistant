@@ -19,7 +19,8 @@ from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 _LOGGER = logging.getLogger(__name__)
 
 _DEVICES_REGEX = re.compile(
-    r'(?P<hostname>(^\|).+?(\|))'
+    # r'(^\|)(?P<hostname>.+?)(\s+)(\|)'
+    r'(^\|)(?!DHCP|Hostname)(?P<hostname>.+?)(\s+)(\|)'
     r'(?P<mac>(([0-9a-f]{2}[:-]){5}([0-9a-f]{2})))\s+(\|)'
     r'(?P<ip>([0-9]{1,3}[\.]){3}[0-9]{1,3})\s+(\|)'
     r'(?P<expires>(.+?))\s+(\|)'
@@ -68,6 +69,9 @@ class MeoFiberGatewayDeviceScanner(DeviceScanner):
             return None
         for client in self.last_results:
             if client['mac'] == device:
+                print('######################')
+                print(client['host'])
+                print('######################')
                 return client['host']
         return None
 
@@ -125,4 +129,3 @@ class MeoFiberGatewayDeviceScanner(DeviceScanner):
                     'type': match.group('type')
                     }
         return devices
-
